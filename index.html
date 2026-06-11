@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Capital Camps — Rec Room Inventory</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@300;400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #121212;
+    --dark: #333333;
+    --mid: #6b6b6b;
+    --light: #999999;
+    --border: #d9d9d9;
+    --bg: #f7f4ef;
+    --white: #ffffff;
+    --accent: #326891;
+    --serif: 'Playfair Display', 'Georgia', serif;
+    --body-serif: 'Source Serif 4', Georgia, serif;
+    --sans: 'Inter', -apple-system, sans-serif;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--black);
+    font-family: var(--body-serif);
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+
+  /* ── Masthead ── */
+  .masthead {
+    background: var(--white);
+    border-bottom: 3px solid var(--black);
+    text-align: center;
+    padding: 20px 24px 14px;
+  }
+  .masthead-eyebrow {
+    font-family: var(--sans);
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin-bottom: 4px;
+  }
+  .masthead-title {
+    font-family: var(--serif);
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--black);
+  }
+  .masthead-rule {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0 0;
+  }
+  .masthead-rule::before,
+  .masthead-rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--black);
+  }
+  .masthead-sub {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--mid);
+    white-space: nowrap;
+  }
+
+  /* ── Container ── */
+  .wrap {
+    max-width: 880px;
+    margin: 0 auto;
+    padding: 28px 20px 60px;
+  }
+
+  /* ── Search ── */
+  .search-bar {
+    margin-bottom: 24px;
+  }
+  .search-input {
+    width: 100%;
+    font-family: var(--body-serif);
+    font-size: 18px;
+    padding: 14px 16px;
+    border: 2px solid var(--black);
+    background: var(--white);
+    color: var(--black);
+  }
+  .search-input::placeholder { color: var(--light); font-style: italic; }
+  .search-input:focus { outline: none; border-color: var(--accent); }
+
+  .result-count {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--mid);
+    margin: 10px 2px 0;
+  }
+
+  /* ── Section ── */
+  .section {
+    margin-top: 32px;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: 22px;
+    letter-spacing: 0.01em;
+    border-bottom: 2px solid var(--black);
+    padding-bottom: 6px;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+  .section-count {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 12px;
+    color: var(--mid);
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  /* ── Item list ── */
+  .item-list {
+    list-style: none;
+    columns: 2;
+    column-gap: 32px;
+  }
+  @media (max-width: 640px) {
+    .item-list { columns: 1; }
+  }
+  .item-list li {
+    font-family: var(--body-serif);
+    font-size: 16px;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--border);
+    break-inside: avoid;
+  }
+  .item-list li mark {
+    background: #fff1a8;
+    color: inherit;
+  }
+
+  .empty-state {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--mid);
+    text-align: center;
+    padding: 60px 0;
+    font-style: italic;
+  }
+
+  footer {
+    text-align: center;
+    font-family: var(--sans);
+    font-size: 11px;
+    color: var(--light);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    margin-top: 48px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+</style>
+</head>
+<body>
+
+<div class="masthead">
+  <div class="masthead-eyebrow">Capital Camps &amp; Retreat Center</div>
+  <div class="masthead-title">Rec Room Inventory</div>
+  <div class="masthead-rule">
+    <span class="masthead-sub">What's in the Rec Room</span>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="search-bar">
+    <input class="search-input" type="text" id="searchInput" placeholder="Search the inventory…" oninput="render()" autofocus />
+    <div class="result-count" id="resultCount"></div>
+  </div>
+
+  <div id="sections"></div>
+</div>
+
+<footer>Capital Camps Logistics &middot; Rec Room Inventory</footer>
+
+<script>
+const ITEMS = [{"name": "Beach Balls", "category": "Sports Supplies"}, {"name": "Mini American Flags", "category": "Miscellaneous"}, {"name": "Gaga ball", "category": "Sports Supplies"}, {"name": "Mini Israeli Flags", "category": "Miscellaneous"}, {"name": "Frisbees", "category": "Sports Supplies"}, {"name": "Disco Ball", "category": "Miscellaneous"}, {"name": "Bag of Large Ping Pong Balls", "category": "Sports Supplies"}, {"name": "Balloon Pump", "category": "Miscellaneous"}, {"name": "Ping Pong Balls", "category": "Sports Supplies"}, {"name": "Balloon Holders", "category": "Miscellaneous"}, {"name": "Dodgeball Ball", "category": "Sports Supplies"}, {"name": "Water Balloons", "category": "Miscellaneous"}, {"name": "Jump Ropes", "category": "Sports Supplies"}, {"name": "Bubble Kit", "category": "Miscellaneous"}, {"name": "Slinkies", "category": "Sports Supplies"}, {"name": "Large Inflatables (Tree, watermelon, instruments, etc.)", "category": "Miscellaneous"}, {"name": "Tennis Balls", "category": "Sports Supplies"}, {"name": "Rolling Pins", "category": "Miscellaneous"}, {"name": "Cones", "category": "Sports Supplies"}, {"name": "Borax Box", "category": "Miscellaneous"}, {"name": "Bike Helmet", "category": "Sports Supplies"}, {"name": "Floor Odor Eliminator Box", "category": "Miscellaneous"}, {"name": "Hula Hoops", "category": "Sports Supplies"}, {"name": "Small Sand Pails", "category": "Miscellaneous"}, {"name": "Cornhole Type Game", "category": "Sports Supplies"}, {"name": "Small Sand Shovels", "category": "Miscellaneous"}, {"name": "Bucket Liners", "category": "Miscellaneous"}, {"name": "Large Buckets", "category": "Miscellaneous"}, {"name": "Stakes", "category": "Miscellaneous"}, {"name": "Carabiners", "category": "Miscellaneous"}, {"name": "Thin Glow Sticks", "category": "Miscellaneous"}, {"name": "Thick Glow Sticks", "category": "Miscellaneous"}, {"name": "Glow Headband", "category": "Miscellaneous"}, {"name": "Bungee Chords", "category": "Miscellaneous"}, {"name": "Medals", "category": "Miscellaneous"}, {"name": "Coins", "category": "Miscellaneous"}, {"name": "Gems", "category": "Miscellaneous"}, {"name": "Bead Necklaces", "category": "Miscellaneous"}, {"name": "Watering Cans", "category": "Miscellaneous"}, {"name": "Triangle Flags", "category": "Miscellaneous"}, {"name": "Fake Leave", "category": "Miscellaneous"}, {"name": "Table Cloths", "category": "Miscellaneous"}, {"name": "Printer Paper", "category": "Arts Supplies"}, {"name": "Speakers", "category": "Tech Equipment"}, {"name": "Paint Jugs (Paint cups separate)", "category": "Arts Supplies"}, {"name": "AV Chords", "category": "Tech Equipment"}, {"name": "Popsicle Sticks", "category": "Arts Supplies"}, {"name": "HDMI Chords", "category": "Tech Equipment"}, {"name": "Boxes of Pencils", "category": "Arts Supplies"}, {"name": "Flood Lights", "category": "Tech Equipment"}, {"name": "Boxes of Pens (~50 Count)", "category": "Arts Supplies"}, {"name": "Projector", "category": "Tech Equipment"}, {"name": "Marker Boxes", "category": "Arts Supplies"}, {"name": "HDMI -> converter", "category": "Tech Equipment"}, {"name": "Construction Paper", "category": "Arts Supplies"}, {"name": "Blockrockers (list location)", "category": "Tech Equipment"}, {"name": "Yarn", "category": "Arts Supplies"}, {"name": "Blockrocker Microphones", "category": "Tech Equipment"}, {"name": "Gimp", "category": "Arts Supplies"}, {"name": "Paint transport cups", "category": "Arts Supplies"}, {"name": "Boxes of 50 Camp Envelopes", "category": "Arts Supplies"}, {"name": "Boxes of 50 Small Pocket Notes", "category": "Arts Supplies"}, {"name": "CCRC Notecards", "category": "Arts Supplies"}, {"name": "7x10 White Paper", "category": "Arts Supplies"}, {"name": "Mini Notepads", "category": "Arts Supplies"}, {"name": "Capital Camps Nametags", "category": "Arts Supplies"}, {"name": "3x5 Note Cards", "category": "Arts Supplies"}, {"name": "Manilla Folders", "category": "Arts Supplies"}, {"name": "4x8 Paper Slips", "category": "Arts Supplies"}, {"name": "Mini Journals", "category": "Arts Supplies"}, {"name": "CCRC Envelopes", "category": "Arts Supplies"}, {"name": "CCRC Staff Letters", "category": "Arts Supplies"}, {"name": "Coloring Sheets", "category": "Arts Supplies"}, {"name": "Scissors", "category": "Arts Supplies"}, {"name": "Colored Pencils", "category": "Arts Supplies"}, {"name": "3x4'' Cotton Draw String Bags", "category": "Arts Supplies"}, {"name": "Sharpie Pens", "category": "Arts Supplies"}, {"name": "Washable Markers (6 Boxes)", "category": "Arts Supplies"}, {"name": "Bic Pens", "category": "Arts Supplies"}, {"name": "Pencils", "category": "Arts Supplies"}, {"name": "Art Set Case", "category": "Arts Supplies"}, {"name": "Spray Paint Cans", "category": "Arts Supplies"}, {"name": "Colored Pens", "category": "Arts Supplies"}, {"name": "Dual Tip Acrylic Markers", "category": "Arts Supplies"}, {"name": "Acryllic Paint Bottles", "category": "Arts Supplies"}, {"name": "Red Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Green Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Orange Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Black Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Yellow Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Blue Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Purple Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "White Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Brown Acrylic Paint Jug", "category": "Arts Supplies"}, {"name": "Blue Face paint", "category": "Arts Supplies"}, {"name": "White Facepaint", "category": "Arts Supplies"}, {"name": "Matches", "category": "Arts Supplies"}, {"name": "Red Solo Cups", "category": "Arts Supplies"}, {"name": "Glue Sticks", "category": "Arts Supplies"}, {"name": "Beads", "category": "Arts Supplies"}, {"name": "Pipe Cleaners", "category": "Arts Supplies"}, {"name": "Tape Tin", "category": "Arts Supplies"}, {"name": "Scotch Tape", "category": "Arts Supplies"}, {"name": "Chalk", "category": "Arts Supplies"}, {"name": "Chalk Dragger", "category": "Arts Supplies"}, {"name": "Rocks for Painting", "category": "Arts Supplies"}, {"name": "Rolls of Yarn", "category": "Arts Supplies"}, {"name": "Rolls of String", "category": "Arts Supplies"}, {"name": "Roll of Ribbon", "category": "Arts Supplies"}, {"name": "Gimp Rolls", "category": "Arts Supplies"}, {"name": "Clothesline Roll", "category": "Arts Supplies"}, {"name": "Crayons", "category": "Arts Supplies"}, {"name": "White Boards", "category": "Arts Supplies"}, {"name": "White board markers", "category": "Arts Supplies"}, {"name": "White Board Erasors", "category": "Arts Supplies"}, {"name": "Big Paint Brushes", "category": "Arts Supplies"}, {"name": "Small Paint Brushes", "category": "Arts Supplies"}, {"name": "Paint Cups (No Tops)", "category": "Arts Supplies"}, {"name": "Box of 18 Bottles of Acrylic Paint", "category": "Arts Supplies"}, {"name": "Washable Paint Pens", "category": "Arts Supplies"}, {"name": "Metallic Gold Primer (Spray)", "category": "Arts Supplies"}, {"name": "Gloss (Spray)", "category": "Arts Supplies"}, {"name": "Red Washable Paint (Medium)", "category": "Arts Supplies"}, {"name": "Blue Washable Paint (Medium)", "category": "Arts Supplies"}, {"name": "Yellow Washable Paint (Medium)", "category": "Arts Supplies"}, {"name": "Black Washable Paint (Medium)", "category": "Arts Supplies"}, {"name": "White Washable Paint (Medium)", "category": "Arts Supplies"}, {"name": "Paint Dotters", "category": "Arts Supplies"}, {"name": "White Lunch Bags", "category": "Arts Supplies"}, {"name": "Animal Print Napkins", "category": "Arts Supplies"}, {"name": "Small Cups + Tops", "category": "Arts Supplies"}, {"name": "Sponges", "category": "Arts Supplies"}, {"name": "Assorted Plastic Serving Utensils", "category": "Arts Supplies"}, {"name": "Straws", "category": "Arts Supplies"}, {"name": "Air Horn", "category": "Arts Supplies"}, {"name": "Sandwich Bags", "category": "Arts Supplies"}, {"name": "Bug Sponges", "category": "Arts Supplies"}, {"name": "Bowls", "category": "Arts Supplies"}, {"name": "Plates", "category": "Arts Supplies"}, {"name": "Knives", "category": "Arts Supplies"}, {"name": "Cutlery Sets", "category": "Arts Supplies"}, {"name": "Aluminum Foil Rolls", "category": "Arts Supplies"}, {"name": "Shaving Cream Canisters", "category": "Arts Supplies"}, {"name": "Black Trash Bags", "category": "Arts Supplies"}, {"name": "Small Clear Trash Bag Roll", "category": "Arts Supplies"}, {"name": "Panini Press", "category": "Arts Supplies"}, {"name": "Waffle Maker", "category": "Arts Supplies"}, {"name": "Cookie Cutters", "category": "Arts Supplies"}, {"name": "3 Large Bottles of Elmer's Glue", "category": "Arts Supplies"}, {"name": "Pool Noodles", "category": "Arts Supplies"}, {"name": "Plastic Drop Cloth", "category": "Arts Supplies"}, {"name": "Sesame Street Costumes", "category": "Arts Supplies"}, {"name": "Toranut Vests", "category": "Arts Supplies"}, {"name": "Bandanas", "category": "Arts Supplies"}, {"name": "Lanyards", "category": "Board Games / Card Games / Puzzles"}, {"name": "Misc. Costumes", "category": "Board Games / Card Games / Puzzles"}, {"name": "Apples to Apples (Jewish Edition)", "category": "Board Games / Card Games / Puzzles"}, {"name": "Ultimate Outburst", "category": "Board Games / Card Games / Puzzles"}, {"name": "No Stress Chess", "category": "Board Games / Card Games / Puzzles"}, {"name": "Rummikub", "category": "Board Games / Card Games / Puzzles"}, {"name": "Scattegories", "category": "Board Games / Card Games / Puzzles"}, {"name": "Times Square Puzzle", "category": "Board Games / Card Games / Puzzles"}, {"name": "Blokus", "category": "Board Games / Card Games / Puzzles"}, {"name": "Jenga", "category": "Board Games / Card Games / Puzzles"}, {"name": "Pile It", "category": "Board Games / Card Games / Puzzles"}, {"name": "Battleship", "category": "Board Games / Card Games / Puzzles"}, {"name": "Uno (Harry Potter)", "category": "Board Games / Card Games / Puzzles"}, {"name": "Happy Salmon", "category": "Board Games / Card Games / Puzzles"}, {"name": "Anarchy Pancakes", "category": "Board Games / Card Games / Puzzles"}, {"name": "Exploding Kittens", "category": "Board Games / Card Games / Puzzles"}, {"name": "Wooden Backgammon Sets", "category": "Board Games / Card Games / Puzzles"}, {"name": "Wooden Chess Set", "category": "Board Games / Card Games / Puzzles"}, {"name": "Apples to Apples (Goyesha Party Set)", "category": "Board Games / Card Games / Puzzles"}, {"name": "Rack-o", "category": "Board Games / Card Games / Puzzles"}, {"name": "Clue mini set", "category": "Board Games / Card Games / Puzzles"}, {"name": "Match-It", "category": "Board Games / Card Games / Puzzles"}, {"name": "Scrabble (Property of Beth Tfiloh)", "category": "Board Games / Card Games / Puzzles"}, {"name": "Connect 4", "category": "Board Games / Card Games / Puzzles"}, {"name": "Banangrams", "category": "Board Games / Card Games / Puzzles"}, {"name": "Cereal Puzzles (ikr lol)", "category": "Board Games / Card Games / Puzzles"}, {"name": "Spot It", "category": "Board Games / Card Games / Puzzles"}, {"name": "Tangrams", "category": "Board Games / Card Games / Puzzles"}, {"name": "Zip It (Math Banagrams)", "category": "Board Games / Card Games / Puzzles"}, {"name": "Yahtzee", "category": "Board Games / Card Games / Puzzles"}, {"name": "Stratego", "category": "Board Games / Card Games / Puzzles"}, {"name": "Dale Earnhardt Monopoly", "category": "Board Games / Card Games / Puzzles"}, {"name": "Castellan", "category": "Board Games / Card Games / Puzzles"}, {"name": "Boggle", "category": "Board Games / Card Games / Puzzles"}, {"name": "Get to Know Your Friends Jenga", "category": "Board Games / Card Games / Puzzles"}, {"name": "The Game of Life Junior", "category": "Board Games / Card Games / Puzzles"}, {"name": "Guesstures", "category": "Board Games / Card Games / Puzzles"}, {"name": "Word on the Street", "category": "Board Games / Card Games / Puzzles"}, {"name": "Poker Chips", "category": "Board Games / Card Games / Puzzles"}, {"name": "Disney Princes Monopoly Junior", "category": "Board Games / Card Games / Puzzles"}, {"name": "HandsDown", "category": "Board Games / Card Games / Puzzles"}, {"name": "Future Stories", "category": "Board Games / Card Games / Puzzles"}, {"name": "U-Build Monopoly", "category": "Board Games / Card Games / Puzzles"}, {"name": "Apples to Apples Junior", "category": "Board Games / Card Games / Puzzles"}, {"name": "Twister", "category": "Board Games / Card Games / Puzzles"}, {"name": "Cranium", "category": "Board Games / Card Games / Puzzles"}, {"name": "America the Beautful Puzzle", "category": "Board Games / Card Games / Puzzles"}, {"name": "Perfect Timing", "category": "Board Games / Card Games / Puzzles"}, {"name": "Five Second Rule", "category": "Board Games / Card Games / Puzzles"}, {"name": "Niagara Falls Puzzle", "category": "Board Games / Card Games / Puzzles"}, {"name": "Trivial Pursuit", "category": "Board Games / Card Games / Puzzles"}, {"name": "Mancala", "category": "Board Games / Card Games / Puzzles"}, {"name": "Scrabble Junior", "category": "Board Games / Card Games / Puzzles"}, {"name": "Tricky Triangle", "category": "Board Games / Card Games / Puzzles"}, {"name": "Twister Mat", "category": "Board Games / Card Games / Puzzles"}, {"name": "Glass Chess and Checkers", "category": "Board Games / Card Games / Puzzles"}, {"name": "Who Wants to be a Millionaire", "category": "Board Games / Card Games / Puzzles"}, {"name": "Decks of Cards", "category": "Board Games / Card Games / Puzzles"}, {"name": "Large Bag of Small Dice", "category": "Board Games / Card Games / Puzzles"}, {"name": "Medium bag of large dice", "category": "Board Games / Card Games / Puzzles"}, {"name": "Large mad lib book", "category": "Board Games / Card Games / Puzzles"}, {"name": "Coloring book", "category": "Board Games / Card Games / Puzzles"}, {"name": "Scavenger Hunt 4 Kids", "category": "Board Games / Card Games / Puzzles"}, {"name": "Religious Apples to Apples", "category": "Board Games / Card Games / Puzzles"}, {"name": "Uno Flip", "category": "Board Games / Card Games / Puzzles"}, {"name": "Set", "category": "Board Games / Card Games / Puzzles"}, {"name": "The Game of Life Adventures", "category": "Board Games / Card Games / Puzzles"}, {"name": "Throw Throw Burrito", "category": "Board Games / Card Games / Puzzles"}, {"name": "Power Hungry Pets", "category": "Board Games / Card Games / Puzzles"}, {"name": "Who Was Harry Houdini", "category": "Board Games / Card Games / Puzzles"}, {"name": "All Bingo Material", "category": "Board Games / Card Games / Puzzles"}, {"name": "2023 Staff Shirts", "category": "Shirts"}, {"name": "Assorted Camper/Staff Shirts", "category": "Shirts"}, {"name": "Draw String Bags", "category": "Shirts"}, {"name": "Staff Shirts", "category": "Shirts"}, {"name": "Boker Bear Patches", "category": "Shirts"}];
+
+const SECTION_ORDER = [
+  'Sports Supplies',
+  'Arts Supplies',
+  'Board Games / Card Games / Puzzles',
+  'Tech Equipment',
+  'Shirts',
+  'Miscellaneous'
+];
+
+function escHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({
+    '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+  }[c]));
+}
+
+function highlight(name, q) {
+  if (!q) return escHtml(name);
+  const idx = name.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return escHtml(name);
+  return escHtml(name.slice(0, idx)) +
+    '<mark>' + escHtml(name.slice(idx, idx + q.length)) + '</mark>' +
+    escHtml(name.slice(idx + q.length));
+}
+
+function render() {
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  const filtered = q
+    ? ITEMS.filter(i => i.name.toLowerCase().includes(q))
+    : ITEMS;
+
+  const countEl = document.getElementById('resultCount');
+  countEl.textContent = filtered.length + ' item' + (filtered.length !== 1 ? 's' : '') +
+    (q ? ' matching "' + q + '"' : ' total');
+
+  const container = document.getElementById('sections');
+  if (!filtered.length) {
+    container.innerHTML = '<div class="empty-state">No items match your search.</div>';
+    return;
+  }
+
+  const groups = new Map();
+  SECTION_ORDER.forEach(s => groups.set(s, []));
+  filtered.forEach(item => {
+    const sec = groups.has(item.category) ? item.category : 'Miscellaneous';
+    groups.get(sec).push(item);
+  });
+
+  container.innerHTML = SECTION_ORDER
+    .filter(s => groups.get(s).length)
+    .map(section => {
+      const items = groups.get(section).slice().sort((a,b) => a.name.localeCompare(b.name));
+      return '<div class="section">' +
+        '<div class="section-title">' + escHtml(section) +
+          '<span class="section-count">' + items.length + ' item' + (items.length !== 1 ? 's' : '') + '</span>' +
+        '</div>' +
+        '<ul class="item-list">' +
+          items.map(i => '<li>' + highlight(i.name, q) + '</li>').join('') +
+        '</ul>' +
+      '</div>';
+    }).join('');
+}
+
+render();
+</script>
+</body>
+</html>
